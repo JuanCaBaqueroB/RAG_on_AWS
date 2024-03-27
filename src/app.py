@@ -8,6 +8,7 @@ from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 from langchain_text_splitters import CharacterTextSplitter
+from utils.etl import read_md_files_from_s3
 
 # Vector Embedding And Vector Store
 from langchain.vectorstores import FAISS
@@ -22,13 +23,15 @@ bedrock_embeddings=BedrockEmbeddings(model_id="amazon.titan-embed-text-v1",clien
 
 ## Data ingestion
 def data_ingestion():
-    markdown_path = "C:/Users/jbaquerb/Documents/Juan/RAG_on_AWS/src/data/amazon-sagemaker-toolkits.md"
-    loader = UnstructuredMarkdownLoader(markdown_path)
-    data = loader.load()
+    #markdown_path = "C:/Users/jbaquerb/Documents/Juan/RAG_on_AWS/src/data/amazon-sagemaker-toolkits.md"
+    #loader = UnstructuredMarkdownLoader(markdown_path)
+    #data = loader.load()
 
     #markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
-    #md_header_splits = markdown_splitter.split_text(loader)
+    #md_header_splits = markdown_splitter.split_text(md_content)
     #md_header_splits
+
+    data = read_md_files_from_s3()
 
     # - in our testing Character split works better with this PDF data set
     text_splitter=RecursiveCharacterTextSplitter(chunk_size=1000,
@@ -41,7 +44,7 @@ def data_ingestion():
     chunk_overlap=200,
     length_function=len,
     is_separator_regex=False,
-)
+    )
     
     docs=text_splitter.split_documents(data)
     return docs

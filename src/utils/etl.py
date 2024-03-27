@@ -3,12 +3,22 @@ import boto3
 import markdown
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import S3DirectoryLoader
 
-# Create an S3 client
-s3 = boto3.client('s3')
+# Load md files from S3
+def read_md_files_from_s3():
+    s3 = boto3.client('s3')
 
+    loader = S3DirectoryLoader("sagemakerdocuments")
+    data_s3 = loader.load()
+    
+    return data_s3
+
+
+"""
 # Specify the bucket name
 bucket_name = 'sagemakerdocuments'
+
 
 try:
     # List objects in the bucket
@@ -26,43 +36,8 @@ try:
 except Exception as e:
     print("An error occurred:", e)
 
-
-## Data ingestion
-def data_ingestion():
-    markdown_path = "C:/Users/jbaquerb/Documents/Juan/RAG_on_AWS/src/data/amazon-sagemaker-toolkits.md"
-    loader = UnstructuredMarkdownLoader(markdown_path)
-    data = loader.load()
-
-    # - in our testing Character split works better with this PDF data set
-    text_splitter=RecursiveCharacterTextSplitter(chunk_size=1000,
-                                                 chunk_overlap=1000)
     
-    docs=text_splitter.split_documents(data)
-    return docs
-
-## Vector Embedding and vector store
-def get_vector_store(docs):
-    vectorstore_faiss=FAISS.from_documents(
-        docs,
-        bedrock_embeddings
-    )
-    vectorstore_faiss.save_local("faiss_index")
-
-docs = data_ingestion()
-get_vector_store(docs)
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings,allow_dangerous_deserialization=True)
 llm=get_titan_llm() 
 user_question="What is AWS SageMaker?"
@@ -79,17 +54,10 @@ def get_response_llm(llm,vectorstore_faiss,query):
     chain_type_kwargs={"prompt": PROMPT}
 )
     answer=qa({"query":query})
+    answer['source_documents'][0].metadata['source']
     #print(answer['source'])
     #return answer['result']
 
 get_response_llm(llm,faiss_index,user_question)
 
-
-
-
-
-
-
-
-
-
+"""
