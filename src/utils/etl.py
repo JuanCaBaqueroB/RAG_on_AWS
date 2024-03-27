@@ -14,6 +14,19 @@ def read_md_files_from_s3():
     
     return data_s3
 
+# Get a list with the documents retrieved
+def get_unique_docs(answer):
+    used_docs=[]
+    for i in range(0,len(answer['source_documents'])):
+        used_docs.append(answer['source_documents'][i].metadata['source'])
+
+    unique_values = set(used_docs)
+    #print(unique_values)
+    
+    return unique_values
+
+
+
 
 """
 # Specify the bucket name

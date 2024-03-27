@@ -8,7 +8,7 @@ from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 from langchain_text_splitters import CharacterTextSplitter
-from utils.etl import read_md_files_from_s3
+from src.utils.etl import read_md_files_from_s3,get_unique_docs
 
 # Vector Embedding And Vector Store
 from langchain.vectorstores import FAISS
@@ -31,6 +31,7 @@ def data_ingestion():
     #md_header_splits = markdown_splitter.split_text(md_content)
     #md_header_splits
 
+    print("-----> Loading files from S3 into FAISS vector store")
     data = read_md_files_from_s3()
 
     # - in our testing Character split works better with this PDF data set
@@ -101,8 +102,8 @@ def get_response_llm(llm,vectorstore_faiss,query):
     chain_type_kwargs={"prompt": PROMPT}
 )
     answer=qa({"query":query})
-    print(answer)
-    return answer['result']
+    #print(answer)
+    return answer
 
 
 def main():
@@ -126,13 +127,17 @@ def main():
                 st.success("Done")
         
 
-    if st.button("Submit question - Titan"):
+    if st.button("Submit question"):
         with st.spinner("Processing..."):
             faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings,allow_dangerous_deserialization=True)
             llm=get_titan_llm() 
             
             #faiss_index = get_vector_store(docs)
-            st.write(get_response_llm(llm,faiss_index,user_question))
+            llm_answer=get_response_llm(llm,faiss_index,user_question)
+            st.write(llm_answer['result'])
+            st.header("Related documents")
+            st.text_input("To learn more about it please read the following document(s)")
+            st.write(get_unique_docs(llm_answer))
             st.success("Done")
 
 if __name__ == "__main__":
