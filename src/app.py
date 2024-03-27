@@ -6,6 +6,8 @@ import numpy as np
 import streamlit as st
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import MarkdownHeaderTextSplitter
+from langchain_text_splitters import CharacterTextSplitter
 
 # Vector Embedding And Vector Store
 from langchain.vectorstores import FAISS
@@ -24,9 +26,22 @@ def data_ingestion():
     loader = UnstructuredMarkdownLoader(markdown_path)
     data = loader.load()
 
+    #markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
+    #md_header_splits = markdown_splitter.split_text(loader)
+    #md_header_splits
+
     # - in our testing Character split works better with this PDF data set
     text_splitter=RecursiveCharacterTextSplitter(chunk_size=1000,
-                                                 chunk_overlap=1000)
+                                                 chunk_overlap=1000,
+                                                 )
+    
+    text_splitter = CharacterTextSplitter(
+    separator="\n\n",
+    chunk_size=1000,
+    chunk_overlap=200,
+    length_function=len,
+    is_separator_regex=False,
+)
     
     docs=text_splitter.split_documents(data)
     return docs
@@ -48,20 +63,25 @@ def get_titan_llm():
 
 
 prompt_template = """
+User: You are a virtual Q&A assistant that works for AWS 
+and you have to answer questions related to SageMaker service on AWS.
 
-Human: Use the following pieces of context to provide a 
+
+Use the following pieces of context to provide a 
 concise answer to the question at the end. Summarize with 
 350 words with detailed explanations. If you don't know the answer, 
 just say that you don't know, don't try to make up an answer.
-Don't answer questions that are not related with AWS Sagemaker documentation.
-Don't use 'Human' label in your answer.
+DON'T answer questions that are not related with AWS Sagemaker documentation.
+DON'T use 'Human' label in your answer.
+JUST RETURN the answer without any other words or strings.
+ALWAYS ANSWER IN ENGLISH.
 <context>
 {context}
 </context
 
 Question: {question}
 
-Assistant:"""
+Bot:"""
 
 PROMPT = PromptTemplate(
     template=prompt_template, input_variables=["context", "question"]
@@ -78,6 +98,7 @@ def get_response_llm(llm,vectorstore_faiss,query):
     chain_type_kwargs={"prompt": PROMPT}
 )
     answer=qa({"query":query})
+    print(answer)
     return answer['result']
 
 

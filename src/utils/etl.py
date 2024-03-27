@@ -62,12 +62,34 @@ get_vector_store(docs)
 
 
 
-s3_uri = "https://s3.console.aws.amazon.com/s3/buckets/sagemakerdocuments?region=us-east-1&bucketType=general&tab=properties"
 
-#Load dataframe to DataLake
-def load_to_data_lake(df,name):
-    object_name = f's3://data-lake-jcbb/{name}.csv'#_'{time.strftime("%d_%m_%Y_%H_%M")}.csv'
-    print(f"-------------------->Guardando {name}.csv en s3",object_name)
-    df.to_csv(object_name,index=False)
+faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings,allow_dangerous_deserialization=True)
+llm=get_titan_llm() 
+user_question="What is AWS SageMaker?"
 
-load_to_data_lake(df2,"Bogota")
+def get_response_llm(llm,vectorstore_faiss,query):
+    global answer
+    qa = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=vectorstore_faiss.as_retriever(
+        search_type="similarity", search_kwargs={"k": 3}
+    ),
+    return_source_documents=True,
+    chain_type_kwargs={"prompt": PROMPT}
+)
+    answer=qa({"query":query})
+    #print(answer['source'])
+    #return answer['result']
+
+get_response_llm(llm,faiss_index,user_question)
+
+
+
+
+
+
+
+
+
+
