@@ -137,8 +137,13 @@ def main():
             llm_answer=get_response_llm(llm,faiss_index,user_question)
             st.write(llm_answer['result'])
             st.header("Related documents")
-            st.text_input("To learn more about it please read the following document(s)")
-            st.write(get_unique_docs(llm_answer))
+            st.write("To learn more about your question please read the following document(s):")
+            
+            # Convert the list to a Markdown formatted string with bullets
+            results_markdown = "\n".join([f"- {result}" for result in get_unique_docs(llm_answer)])
+
+            # Display the list with bullets using Markdown syntax
+            st.markdown(results_markdown)
             st.success("Done")
 
 if __name__ == "__main__":

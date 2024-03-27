@@ -20,7 +20,7 @@ def get_unique_docs(answer):
     for i in range(0,len(answer['source_documents'])):
         used_docs.append(answer['source_documents'][i].metadata['source'])
 
-    unique_values = set(used_docs)
+    unique_values = list(set(used_docs))
     #print(unique_values)
     
     return unique_values
