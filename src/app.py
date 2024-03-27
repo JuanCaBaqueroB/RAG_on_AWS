@@ -8,7 +8,8 @@ from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 from langchain_text_splitters import CharacterTextSplitter
-from src.utils.etl import read_md_files_from_s3,get_unique_docs
+from utils.etl import read_md_files_from_s3
+from utils.etl import get_unique_docs
 
 # Vector Embedding And Vector Store
 from langchain.vectorstores import FAISS
