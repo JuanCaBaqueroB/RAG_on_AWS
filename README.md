@@ -16,5 +16,4 @@ The architecture used to deploy the web app in a production environment on AWS i
 
 ![alt text](https://github.com/JuanCaBaqueroB/RAG_on_AWS/blob/main/src/RAG_on_AWS.png)
 
-Is important to note that the web app developed in streamlit showed in the RAG architecture will be embedded in a docker image stored in AWS ECR and will run in AWS ECS. 
-There are other architectures that enable the web app working on. For example, the app could be run over a simple compute instance (EC2). However, implement some requirements like privacy or security concerns on this architecture could be harder than use a Docker container managed by AWS. 
+It is important to note that the web app developed in Streamlit, as shown in the RAG architecture, will be embedded in a Docker image stored in AWS ECR and will run on AWS ECS. There are other architectures in which the web app could operate. For example, the app could run on a simple compute instance (EC2). However, implementing certain requirements such as privacy or security concerns on this architecture could be more challenging compared to using a Docker container managed by AWS.
