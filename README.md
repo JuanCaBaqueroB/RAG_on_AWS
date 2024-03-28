@@ -6,3 +6,5 @@ The architecture used to deploy the web app in AWS production environment is pre
 
 ![alt text](https://github.com/JuanCaBaqueroB/RAG_on_AWS/blob/main/src/RAG_on_AWS.jpg)
 
+![alt text](https://github.com/JuanCaBaqueroB/RAG_on_AWS/blob/main/src/RAG_on_AWS.png)
+
