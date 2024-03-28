@@ -60,36 +60,41 @@ def get_vector_store(docs):
     vectorstore_faiss.save_local("faiss_index")
 
 def get_titan_llm():
-    ##create the Titan Model
-    llm=Bedrock(model_id="amazon.titan-text-lite-v1",client=bedrock,
-                model_kwargs={'maxTokenCount':1024})
+    ##create the Titan Express Model 
+    llm=Bedrock(model_id="amazon.titan-text-express-v1",client=bedrock,
+                model_kwargs={'maxTokenCount':5000})
     
     return llm
 
 
-prompt_template = """
+context_prompt = """
 User: You are a virtual Q&A assistant that works for AWS 
 and you have to answer questions related to SageMaker service on AWS.
 
 
 Use the following pieces of context to provide a 
-concise answer to the question at the end. Summarize with 
-350 words with detailed explanations. If you don't know the answer, 
-just say that you don't know, don't try to make up an answer.
+concise answer to the question at the end. Summarize with detailed explanations. 
+If you don't know the answer, just say that you don't know, don't try to make up an answer.
 DON'T answer questions that are not related with AWS Sagemaker documentation.
 DON'T use 'Human' label in your answer.
 JUST RETURN the answer without any other words or strings.
 ALWAYS ANSWER IN ENGLISH.
+Be precise and focus on the question given.
+Please provide responses related specifically to AWS SageMaker documentation. Responses should pertain to topics, queries, or concepts directly related to AWS SageMaker services, features, functionalities, usage guidelines, tutorials, or documentation. Responses not directly related to AWS SageMaker documentation should be avoided as per this guideline.
+
 <context>
 {context}
 </context
 
 Question: {question}
 
+DON'T answer questions that are not related with AWS Sagemaker documentation.
+Please provide responses related specifically to AWS SageMaker documentation. Responses should pertain to topics, queries, or concepts directly related to AWS SageMaker services, features, functionalities, usage guidelines, tutorials, or documentation. Responses not directly related to AWS SageMaker documentation should be avoided as per this guideline.
+
 Bot:"""
 
 PROMPT = PromptTemplate(
-    template=prompt_template, input_variables=["context", "question"]
+    template=context_prompt, input_variables=["context", "question"]
 )
 
 def get_response_llm(llm,vectorstore_faiss,query):
@@ -138,9 +143,11 @@ def main():
             st.write(llm_answer['result'])
             st.header("Related documents")
             st.write("To learn more about your question please read the following document(s):")
-            
+            s3_urls=get_unique_docs(llm_answer)
+            filenames = [url.split('/')[-1] for url in s3_urls]
+        
             # Convert the list to a Markdown formatted string with bullets
-            results_markdown = "\n".join([f"- {result}" for result in get_unique_docs(llm_answer)])
+            results_markdown = "\n".join([f"- {result}" for result in filenames])
 
             # Display the list with bullets using Markdown syntax
             st.markdown(results_markdown)

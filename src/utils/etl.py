@@ -1,8 +1,4 @@
-import pandas as pd
 import boto3
-import markdown
-from langchain_community.document_loaders import UnstructuredMarkdownLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import S3DirectoryLoader
 
 # Load md files from S3
