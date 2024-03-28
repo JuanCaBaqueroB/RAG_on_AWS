@@ -5,4 +5,6 @@ This repo includes an implementation of a RAG architecture to create a Q&amp;A a
 The architecture used to deploy the web app in AWS production environment is presented below:
 
 ![alt text](https://github.com/JuanCaBaqueroB/RAG_on_AWS/blob/main/src/RAG_on_AWS.svg)
+HOLA
+![alt text](https://github.com/JuanCaBaqueroB/RAG_on_AWS/blob/main/src/RAG_on_AWS.jpg)
 
