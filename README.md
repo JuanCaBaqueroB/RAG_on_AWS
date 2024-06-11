@@ -4,7 +4,7 @@ This repo present a solution designed to address the documentation navigation ch
 The Q&A system also retrieves the documents used by the app to create the response, pointing the users to the source and other documents that may be relevant to what they are currently working or looking for. This version focus is on AWS SageMaker documentation, but the solution scope is replicable, extensible and adaptable to other documents or SageMaker updates.
 
 # RAG on AWS
-This repo includes an implementation of a RAG architecture to create a Q&amp;A app deployed in AWS able to answer questions related with Amazon SageMaker service. The app uses different models like Titan Text G1 Emebeddings and Titan Express, respectively. The app answer is designed to answer questions related with the documentation of the AWS SageMaker service.
+This repo includes an implementation of a RAG architecture to create a Q&amp;A app deployed in AWS able to answer questions related with Amazon SageMaker service. The app uses different models like Titan Text G1 Embeddings and Titan Express, respectively. The app answer is designed to answer questions related with the documentation of the AWS SageMaker service.
 
 ## RAG Architecture
 To solve the business needs we decided to implement a RAG pattern architecture. The PoC implemented have the following architecture:
